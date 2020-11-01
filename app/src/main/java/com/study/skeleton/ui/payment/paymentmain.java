@@ -38,7 +38,7 @@ public class paymentmain extends AppCompatActivity {
                     @Override
                     public void processFinish(String output) {
                         Toast.makeText(getApplicationContext(), output, Toast.LENGTH_LONG).show();
-                        // ADD PAYMENT LOGIC HERE
+                        // TODO:ADD PAYMENT LOGIC HERE
                     }
                 },getApplicationContext()).execute("https://127.0.0.1:8080/", paymentRequestBuilder.toString());
             }

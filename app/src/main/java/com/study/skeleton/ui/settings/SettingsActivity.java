@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Boolean res;
                         res = sharedPreferences.getBoolean(SettingsActivity.confirmationSwitchKey,false);
                         if (res){
-                            //ADD REGISTRATION LOGIC HERE
+                            //TODO: ADD REGISTRATION LOGIC HERE
 
 
                         }
