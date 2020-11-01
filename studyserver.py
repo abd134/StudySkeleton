@@ -29,7 +29,7 @@ class MyServer(http.server.BaseHTTPRequestHandler):
         content_length =  int(self.headers['Content-Length'])
         # body = self.rfile.read(content_length).decode("utf-8")
         message = json.loads(self.rfile.read(content_length))
-        print(self.headers)
+        # print(self.headers)
         if message["Request"] == "Login":
             # print(message['Username'])
             # print(message['Password'])
