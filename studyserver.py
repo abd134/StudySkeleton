@@ -11,11 +11,35 @@ import json
 hostName = "localhost"
 serverPort = 8080
 
-def transaction(sender,receiver,amount):
-    #pseudo function to mimic transaction
-    return
-
 class MyServer(http.server.BaseHTTPRequestHandler):
+	confirmationEnabled = False
+	def initializeRegistration(user):
+		#Implement initial registration here. 
+		#User is the user for which initialization is taking place
+		#Set All initilization variables here i.e attestation challenge.
+		#All responses that you need to send back to the client must be returned as one string.
+		return ""
+	def verifyCertificateChain(user,certificateChain):
+		#Verify the certificate chain received here.
+		#User is the user for to whom the certificate chain belongs.
+		#Return true if verification of certificate chain is successful.
+		#Verification includes checking the key properties corresponding to the certificate chain.
+		#For this study in order for verification to be successful you have to check that the key has the property "trusted confirmation required".
+		#Also return all key properties(in a tuple or dictionary or list whichever you prefer).
+		#Final return type has to be a 2-tuple where first element is a boolean indicating if verification was successful and
+		#the second element must be the keyProperties.
+		return (False, None)
+	def initiliazeTransaction(sender,receiver,amount):
+		#Create a prompt that the sender must confirm.
+		#Prompt must contain at least the receiver and the amount, the rest of the phrasing is upto you.
+		#Also create any extra data you need to send i.e nonce
+		#Return prompt and any extra data in one single string to be sent to the client
+		return ''
+	def verifyConfirmationMessage(user,confirmedData,signature):
+		#Verify the signature on the confirmedData and return true if successful
+		#Also ensure that the confirmed data includes the nonce corresponds to the payment being sent
+		#User is the user for to which confirmed the message.
+		return False
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -28,7 +52,7 @@ class MyServer(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         content_length =  int(self.headers['Content-Length'])
         # body = self.rfile.read(content_length).decode("utf-8")
-        message = json.loads(self.rfile.read(content_length))
+        message = json.loads(self.rfile.read(content_length).decode("latin_1"))
         # print(self.headers)
         if message["Request"] == "Login":
             # print(message['Username'])
@@ -51,24 +75,76 @@ class MyServer(http.server.BaseHTTPRequestHandler):
                 response.write(b'FAILED')
                 self.wfile.write(response.getvalue())
         elif message["Request"] == "Payment":
-                self.send_response(200)
-                cookie=http.cookies.SimpleCookie(self.headers.get("Cookie"))
-                if cookie['user'] == "NA":
-                    self.end_headers
-                    response = BytesIO()
-                    response.write(b'SIGN IN AGAIN')
-                    self.wfile.write(response,getvalue())
+            self.send_response(200)
+            cookie=http.cookies.SimpleCookie(self.headers.get("Cookie"))
+            if cookie['user'] == "NA":
+                self.end_headers
+                response = BytesIO()
+                response.write(b'SIGN IN AGAIN')
+                self.wfile.write(response,getvalue())
+            else:
+                for morsel in cookie.values():
+                    self.send_header("Set-Cookie",morsel.OutputString())
+                self.end_headers()
+                response = BytesIO()
+                if confirmationEnabled == True:
+                	promptDetails = initializeTransaction(cookie['user'],message["Recipient"],message["Amount"])
+                	response.write(promptDetails.encode("utf-8"))
                 else:
-                    for morsel in cookie.values():
-                        self.send_header("Set-Cookie",morsel.OutputString())
-                    self.end_headers()
-                    transaction(cookie['user'],message["Recipient"],message["Amount"])
-                    response = BytesIO()
-                    response.write(b'SENT ')
-                    response.write(str(message["Amount"]).encode("utf-8"))
-                    response.write(b" TO ")
-                    response.write(str(message["Recipient"]).encode("utf-8"))
-                    self.wfile.write(response.getvalue())
+	                response.write(b'SENT ')
+	                response.write(str(message["Amount"]).encode("utf-8"))
+	                response.write(b" TO ")
+	                response.write(str(message["Recipient"]).encode("utf-8"))
+                self.wfile.write(response.getvalue())
+        elif message["Request"] == "RegisterConfirmation":
+        	self.send_response(200)
+        	cookie=http.cookies.SimpleCookie(self.headers.get("Cookie"))
+        	if cookie['user'] == "NA":
+                self.end_headers
+                response = BytesIO()
+                response.write(b'SIGN IN AGAIN')
+                self.wfile.write(response,getvalue())
+            else:
+            	for morsel in cookie.values():
+                    self.send_header("Set-Cookie",morsel.OutputString())
+                self.end_headers()
+                response = BytesIO()
+                initVars=initializeRegistration(str(cookie['user']))
+                response.write(initVars.encode("utf-8"))
+                self.wfile.write(response.getvalue())
+        elif message["Request"] == "RegisterCertificates":
+        	self.send_response(200)
+        	cookie=http.cookies.SimpleCookie(self.headers.get("Cookie"))
+        	if cookie['user'] == "NA":
+                self.end_headers
+                response = BytesIO()
+                response.write(b'SIGN IN AGAIN')
+                self.wfile.write(response,getvalue())
+            else:
+            	for morsel in cookie.values():
+                    self.send_header("Set-Cookie",morsel.OutputString())
+                self.end_headers()
+                response = BytesIO()
+                confirmationRegistrationSuccess = verifyCertificateChain(str(cookie['user']), message["CertificateChain"])
+                confirmationEnabled = confirmationRegistrationSuccess
+                response.write(str(confirmationRegistrationSuccess).encode("utf-8"))
+                self.wfile.write(response.getvalue())
+        elif message["Request"] == "ConfimrationMessage":
+        	self.send_response(200)
+        	cookie=http.cookies.SimpleCookie(self.headers.get("Cookie"))
+        	if cookie['user'] == "NA":
+                self.end_headers
+                response = BytesIO()
+                response.write(b'SIGN IN AGAIN')
+                self.wfile.write(response,getvalue())
+            else:
+            	for morsel in cookie.values():
+                    self.send_header("Set-Cookie",morsel.OutputString())
+                self.end_headers()
+                response = BytesIO()
+                confirmationMessageSuccess = verifyConfirmationMessage(str(cookie['user']), message["DatatobeConfirmed"], message["Signature"])
+                response.write(str(confirmationMessageSuccess).encode("utf-8"))
+                self.wfile.write(response.getvalue())
         else:
             self.send_response(400)
             self.end_headers()

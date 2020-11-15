@@ -61,7 +61,7 @@ public class ServerRequest extends AsyncTask <String, Integer, String> {
 
         try {
 
-            out.write(output.getBytes());
+            out.write(output.getBytes("ISO-8859-1"));
             out.flush();
         } catch(IOException e){
             Log.i("mobisys",e.toString());
@@ -138,7 +138,7 @@ public class ServerRequest extends AsyncTask <String, Integer, String> {
 //            Log.i("mobisys", CookieHandler.getDefault().get(url.toURI(), urlConnection.getRequestProperties()).getOrDefault("Cookie", Collections.singletonList("NA")).get(0));
             urlConnection.setSSLSocketFactory(context.getSocketFactory());
             urlConnection.setDoOutput(true);
-            urlConnection.setFixedLengthStreamingMode(output.getBytes().length);
+            urlConnection.setFixedLengthStreamingMode(output.getBytes("ISO-8859-1").length);
             urlConnection.setRequestProperty("Content-Type","application/json; utf-8");
             urlConnection.setRequestProperty("Cookie",CookieHandler.getDefault().get(url.toURI(), urlConnection.getRequestProperties()).getOrDefault("Cookie", Collections.singletonList("NA")).get(0));
 
