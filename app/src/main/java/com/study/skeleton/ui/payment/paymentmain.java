@@ -2,6 +2,7 @@ package com.study.skeleton.ui.payment;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.study.skeleton.R;
+import com.study.skeleton.confirmation.ConfirmationMain;
 import com.study.skeleton.data.model.ServerRequest;
 import com.study.skeleton.ui.main.MainMenu;
 
@@ -21,9 +23,11 @@ public class paymentmain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paymentmain);
+        Context mContext = this;
         final Button sendButton = findViewById(R.id.sendbutton);
         final EditText amount = findViewById(R.id.amount);
         final Spinner recipient = findViewById(R.id.selectreceiver);
+        ConfirmationMain confirmationObject = new ConfirmationMain(this);
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,10 +41,23 @@ public class paymentmain extends AppCompatActivity {
                 new ServerRequest(new ServerRequest.AsyncResponse() {
                     @Override
                     public void processFinish(String output) {
-                        Toast.makeText(getApplicationContext(), output, Toast.LENGTH_LONG).show();
-                        // TODO:ADD PAYMENT LOGIC HERE
+                        Log.i("mobisys",output);
+                        String confirmationMessage = confirmationObject.displayConfirmationPrompt(output);
+                        StringBuilder confirmationRequestBuilder = new StringBuilder();
+                        confirmationRequestBuilder.append("{\"Request\": ");
+                        confirmationRequestBuilder.append("\"ConfirmationRequest\", ");
+                        confirmationRequestBuilder.append("\"ConfirmationMessage\": ");
+                        confirmationRequestBuilder.append("\"" + confirmationMessage + "\"}");
+                        new ServerRequest(new ServerRequest.AsyncResponse() {
+                            @Override
+                            public void processFinish(String output) {
+                                Log.i("mobisys",output);
+
+
+                            }
+                        },mContext).execute("https://127.0.0.1:8080/", confirmationRequestBuilder.toString());
                     }
-                },getApplicationContext()).execute("https://127.0.0.1:8080/", paymentRequestBuilder.toString());
+                },mContext).execute("https://127.0.0.1:8080/", paymentRequestBuilder.toString());
             }
         });
     }

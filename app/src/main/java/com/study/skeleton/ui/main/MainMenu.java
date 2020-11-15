@@ -23,10 +23,6 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final Button paymentButton = findViewById(R.id.Payment);
         final Button settingsButton = findViewById(R.id.settings);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean confirmationSwitch = sharedPref.getBoolean(SettingsActivity.confirmationSwitchKey,false);
-//        Toast.makeText(this,  confirmationSwitch.toString(), Toast.LENGTH_SHORT).show();
-        sharedPref.registerOnSharedPreferenceChangeListener(SettingsActivity.listener);
         paymentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -32,6 +32,7 @@
     <string name="send">SEND</string>
     <string name="enter_amount_to_send">Enter Amount to Send</string>
     <string name="sign_in">Sign in</string>
+    <string name="enable_confirmation">Enable Confirmation</string>
     <string-array name="Recipients">
         <item>Antonio</item>
         <item>Ibrahim</item>
