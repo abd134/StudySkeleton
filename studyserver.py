@@ -26,6 +26,7 @@ def initializeRegistration(user):
 def verifyCertificateChain(user,certificateChain):
 	#Verify the certificate chain received here.
 	#User is the user to whom the certificate chain belongs.
+	#certificateChain is the string of the certificateChain returned by initializeRegistration on the client side.
 	#Return true if verification of certificate chain is successful.
 	#Verification includes checking the key properties corresponding to the certificate chain.
 	#For this study in order for verification to be successful you have to check that the key has the property "trusted confirmation required".
@@ -40,7 +41,7 @@ def initializeTransaction(sender,receiver,amount):
 	#Return prompt and any extra data in one single string to be sent to the client
 	return ""
 def verifyConfirmationMessage(user,confirmationMessage):
-	#ConfirmationMessage is the string containing both the confirmedData and the signature
+	#ConfirmationMessage is the string containing both the confirmedData and the signature return by displayConfirmationPrompt on the client.
 	#Verify the signature on the confirmedData and return true if successful
 	#Also ensure that the confirmed data includes the nonce corresponds to the payment being sent
 	#User is the user for to which confirmed the message.
