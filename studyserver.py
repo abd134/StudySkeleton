@@ -10,7 +10,7 @@ import json
 
 hostName = "localhost"
 serverPort = 8080
-#Add any global variables here.
+#Declare any global variables here.
 
 def initglobalstate():
 	#If you need to store any variables declare them as global here and set there initial state if any.	
@@ -25,7 +25,7 @@ def initializeRegistration(user):
 	return ""
 def verifyCertificateChain(user,certificateChain):
 	#Verify the certificate chain received here.
-	#User is the user for to whom the certificate chain belongs.
+	#User is the user to whom the certificate chain belongs.
 	#Return true if verification of certificate chain is successful.
 	#Verification includes checking the key properties corresponding to the certificate chain.
 	#For this study in order for verification to be successful you have to check that the key has the property "trusted confirmation required".
@@ -61,14 +61,8 @@ class MyServer(http.server.BaseHTTPRequestHandler):
 		#Add declaration for global variables here as well
 		global confirmationEnabled
 		content_length =  int(self.headers['Content-Length'])
-		# body = self.rfile.read(content_length).decode("utf-8")
 		message = json.loads(self.rfile.read(content_length).decode("latin_1"))
-		#print(message)
-		# print(self.headers)
 		if message["Request"] == "Login":
-			# print(message['Username'])
-			# print(message['Password'])
-			# print(body)
 			if message["Username"] ==  "jackielee" and message["Password"] == "brucechan":
 				self.send_response(200)
 				cookie=http.cookies.SimpleCookie()
