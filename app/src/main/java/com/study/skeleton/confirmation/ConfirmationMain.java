@@ -11,7 +11,8 @@ public class ConfirmationMain {
      }
 
      public String initializeRegistration(String initVars){
-         //TODO: use initVars to generate required keypair and return the certificateChain as a single string which will be sent to the server
+         //TODO: use initVars that are produced by initializeRegistration on the server
+         // to generate required keypair and return the certificateChain as a single string which will be sent to the server
          return "";
 
      }

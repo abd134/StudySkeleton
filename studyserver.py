@@ -10,6 +10,7 @@ import json
 
 hostName = "localhost"
 serverPort = 8080
+#Add any global variables here.
 
 def initglobalstate():
 	#If you need to store any variables declare them as global here and set there initial state if any.	
@@ -32,7 +33,7 @@ def verifyCertificateChain(user,certificateChain):
 	#Final return type has to be a 2-tuple where first element is a boolean indicating if verification was successful and
 	#the second element must be the keyProperties.
 	return (False, None)
-def initiliazeTransaction(sender,receiver,amount):
+def initializeTransaction(sender,receiver,amount):
 	#Create a prompt that the sender must confirm.
 	#Prompt must contain at least the receiver and the amount, the rest of the phrasing is upto you.
 	#Also create any extra data you need to send i.e nonce
@@ -98,7 +99,7 @@ class MyServer(http.server.BaseHTTPRequestHandler):
 				self.end_headers()
 				response = BytesIO()
 				if confirmationEnabled == True:
-					promptDetails = initializeTransaction(cookie['user'],message["Recipient"],message["Amount"])
+					promptDetails = initializeTransaction(str(cookie['user']),message["Recipient"],message["Amount"])
 					response.write(promptDetails.encode("utf-8"))
 				else:
 					response.write(b'SENT ')
