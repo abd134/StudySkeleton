@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.CookieHandler;
 import java.net.HttpCookie;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.Key;
 import java.security.KeyStore;
@@ -129,15 +130,15 @@ public class ServerRequest extends AsyncTask <String, Integer, String> {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null,tmf.getTrustManagers(),null);
 
-            HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
-            urlConnection.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+//            urlConnection.setHostnameVerifier(new HostnameVerifier() {
+//                @Override
+//                public boolean verify(String hostname, SSLSession session) {
+//                    return true;
+//                }
+//            });
 //            Log.i("mobisys", CookieHandler.getDefault().get(url.toURI(), urlConnection.getRequestProperties()).getOrDefault("Cookie", Collections.singletonList("NA")).get(0));
-            urlConnection.setSSLSocketFactory(context.getSocketFactory());
+//            urlConnection.setSSLSocketFactory(context.getSocketFactory());
             urlConnection.setDoOutput(true);
             urlConnection.setFixedLengthStreamingMode(output.getBytes("ISO-8859-1").length);
             urlConnection.setRequestProperty("Content-Type","application/json; utf-8");

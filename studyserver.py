@@ -44,7 +44,7 @@ def verifyConfirmationMessage(user,confirmationMessage):
 	#ConfirmationMessage is the string containing both the confirmedData and the signature return by displayConfirmationPrompt on the client.
 	#Verify the signature on the confirmedData and return true if successful
 	#Also ensure that the confirmed data includes the nonce corresponds to the payment being sent
-	#User is the user for to which confirmed the message.
+	#User is the user who confirmed the message.
 	return False
 
 class MyServer(http.server.BaseHTTPRequestHandler):
@@ -62,7 +62,13 @@ class MyServer(http.server.BaseHTTPRequestHandler):
 		#Add declaration for global variables here as well
 		global confirmationEnabled
 		content_length =  int(self.headers['Content-Length'])
-		message = json.loads(self.rfile.read(content_length).decode("latin_1"))
+		body = self.rfile.read(content_length).decode("latin_1")
+		if "ConfirmationRequest" in body:
+			message={}
+			message["Request"] = body[body.find("Request")+11:body.find("ConfirmationMessage")-4]
+			message["ConfirmationMessage"] = body[body.find("ConfirmationMessage")+23:-2]
+		else:
+			message = json.loads(body)
 		if message["Request"] == "Login":
 			if message["Username"] ==  "jackielee" and message["Password"] == "brucechan":
 				self.send_response(200)
@@ -160,7 +166,7 @@ class MyServer(http.server.BaseHTTPRequestHandler):
 if __name__ == "__main__":
 	initglobalstate()
 	webServer = http.server.HTTPServer((hostName, serverPort), MyServer)
-	webServer.socket = ssl.wrap_socket(webServer.socket, server_side=True,certfile='servercert.pem',ssl_version=ssl.PROTOCOL_TLS)
+	# webServer.socket = ssl.wrap_socket(webServer.socket, server_side=True,certfile='servercert.pem',ssl_version=ssl.PROTOCOL_TLS)
 	print("Server started http://%s:%s" % (hostName, serverPort))
 
 	try:
