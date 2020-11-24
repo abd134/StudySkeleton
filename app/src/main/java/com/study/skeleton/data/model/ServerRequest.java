@@ -94,7 +94,7 @@ public class ServerRequest extends AsyncTask <String, Integer, String> {
         String result= null;
         if (!isCancelled() && urls != null && urls.length > 0) {
             String urlString = urls[0];
-            //urlString = "https://10.0.2.2:8080/";
+            urlString = "http://127.0.0.1:8080/";
             try {
                 URL url = new URL(urlString);
                 String resultString = webRequest(url, urls[1]);

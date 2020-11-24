@@ -31,7 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
         enableConfirmationButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Log.i("mobisys","YOLO");
+                //Log.i("mobisys","YOLO");
                 StringBuilder InitRegistrationBuilder = new StringBuilder();
                 InitRegistrationBuilder.append("{\"Request\": ");
                 InitRegistrationBuilder.append("\"RegisterConfirmation\"}");
